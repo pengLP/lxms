@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lxms.dao.OrderDao">
+	<resultMap type="Order" id="OrderResult">
+		<id property="orderId" column="orderId" />
+		<result property="status" column="status" />
+		<result property="createDate" column="createDate" />
+		<result property="refundStatus" column="refundStatus" />
+		<result property="confirmSendProdunctRemark" column="confirmSendProdunctRemark" />
+		<result property="total" column="total" />
+		<result property="buyerSee" column="buyerSee" />
+		<result property="sellerSee" column="sellerSee" />
+		<association property="buyUser" column="buid"
+			select="lxms.dao.UserDao.getById"></association>
+		<association property="sellerUser" column="suid"
+			select="lxms.dao.UserAddressDao.getById"></association>
+	</resultMap>
+	
+	<select id="getById" parameterType="Long" resultMap="OrderResult">
+		select *
+		from order_lxms where orderId=#{orderId}
+	</select>
+
+	<delete id="delete">
+		delete from order_lxms where orderId = #{orderId}
+	</delete>
+
+
+	<update id="updateStatus" parameterType="Map">
+		update order_lxms
+		<set>
+			<if test="status!=null">
+				status = #{status}
+			</if>
+
+		</set>
+		<if test="orderId!=null">
+			where orderId=#{orderId}
+		</if>
+		
+	</update>
+	
+	
+
+
+	
+
+</mapper> 

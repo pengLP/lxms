@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lxms.dao.DepositPayDao">
+	<resultMap type="DepositPay" id="DepositPayResult">
+		<id property="depositPayId" column="depositPayId" />
+		<result property="paystatus" column="paystatus" />
+		<result property="payamount" column="payamount" />
+		<result property="createDate" column="createDate" />
+		<result property="payMethod" column="payMethod" />
+		<association property="user" column="uid"
+			select="lxms.dao.UserDao.getById"></association>
+		<association property="wanted" column="wid"
+			select="lxms.dao.WantedDao.getById"></association>
+	</resultMap>
+	<select id="getById" parameterType="Long" resultMap="DepositPayResult">
+		select *
+		from deposit_pay where depositId=#{depositId}
+	</select>
+	<insert id="add" useGeneratedKeys="true" keyProperty="depositPayId"
+		parameterType="DepositPay">
+		insert into deposit_pay
+		values(null,#{paystatus},#{payamount},now(),#{payMethod},#{user.uid})
+	</insert>
+	<delete id="delete">
+		delete from deposit_pay where depositId =
+		#{depositId}
+	</delete>
+	<update id="update" parameterType="DepositPay">
+		update deposit_pay
+		<set>
+
+		</set>
+		where depositPayId=#{depositPayId}
+	</update>
+	<update id="updateStatus">
+		update deposit_pay
+		<set>
+			<if test="paystatus!=null">
+				paystatus = #{paystatus}
+			</if>
+		</set>
+		where depositPayId=#{depositPayId}
+	</update>
+	<select id="getByOrderId" parameterType="Long" resultMap="DepositPayResult">
+		select
+		*
+		from deposit_pay where depositPayId=(select depositPayId from
+		order_lxms where orderId=#{orderId})
+	</select>
+</mapper> 

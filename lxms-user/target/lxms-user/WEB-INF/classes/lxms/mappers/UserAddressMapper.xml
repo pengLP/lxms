@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lxms.dao.UserAddressDao">
+	<resultMap type="UserAddress" id="userAddressResult">
+		<id property="addressId" column="addressId"/>
+		<result property="traveDate" column="traveDate"/>
+		<result property="shipName" column="shipName"/>
+		<result property="province" column="province"/>
+		<result property="city" column="city"/>
+		<result property="area" column="area"/>
+		<result property="detail" column="detail"/>
+		<result property="phone" column="phone"/>
+		<result property="zip" column="zip"/>
+		<result property="defaultAddress" column="defaultAddress"/>
+	</resultMap>			
+
+	<select id="getById" parameterType="Long" resultType="UserAddress">
+		select *
+		from user_address where addressId=#{addressId}
+	</select>
+	<insert id="add" parameterType="Wanted">
+		insert into user_address(
+		addressId,
+		uid,
+		shipName,
+		province,
+		city,
+		area,
+		detail,
+		phone,
+		zip,
+		defaultAddress,
+		createDate
+		<if test="provinceCode!=null and provinceCode!=''">
+		,provinceCode
+		</if>
+		<if test="cityCode!=null and cityCode!=''">
+		,cityCode
+		</if>
+		<if test="areaCode!=null and areaCode!=''">
+		,areaCode
+		</if>
+		)
+		values(null,#{user.uid},#{shipName},#{province},#{city},#{area},#{detail},#{phone},#{zip},#{defaultAddress},null
+		<if test="provinceCode!=null and provinceCode!=''">
+		,#{provinceCode}
+		</if>
+		<if test="cityCode!=null and cityCode!=''">
+		,#{cityCode}
+		</if>
+		<if test="areaCode!=null and areaCode!=''">
+		,#{areaCode}
+		</if>
+		)
+	</insert>
+	<delete id="delete">
+		delete from user_address where addressId = #{addressId} and uid = #{uid}
+	</delete>
+	<update id="update" parameterType="userAddress">
+		update user_address
+		<set>
+
+		</set>
+		where addressId=#{addressId}
+	</update>
+
+	<select id="find" parameterType="Map" resultType="userAddress">
+		select * from user_address
+		<where>
+			uid = #{uid}
+		</where>
+		order by createDate desc
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+	<select id="findOne" parameterType="Map" resultType="userAddress">
+		select * from user_address
+		<where>
+			<if test="defaultAddress!=null">
+				defaultAddress = #{defaultAddress}
+			</if>
+		</where>
+		
+	</select>
+	
+	<select id="getCount" parameterType="Long" resultType="Integer">
+		select count(*) from user_address where uid = #{uid}
+	</select>
+	
+	<update id="updateDefault">
+		update user_address (
+			defaultAddress
+		)
+		values
+		(
+		<set>
+			#{isDefault}
+		</set>
+		)
+		where addressId = #{addressId} and uid=#{uid}
+	</update>
+	<update id="notDefault">
+	
+		update user_address set defaultAddress=0 where uid = #{uid}
+	</update>
+</mapper> 

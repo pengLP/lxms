@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lxms.dao.OrderDao">
+	<resultMap type="Order" id="OrderResult">
+		<id property="orderId" column="orderId" />
+		<result property="status" column="status" />
+		<result property="createDate" column="createDate" />
+		<result property="wid" column="wid" />
+		<result property="refundStatus" column="refundStatus" />
+		<result property="confirmSendProdunctRemark" column="confirmSendProdunctRemark" />
+		<result property="total" column="total" />
+		<result property="buyerSee" column="buyerSee" />
+		<result property="sellerSee" column="sellerSee" />		
+		<result property="productName" column="productName" />
+		<result property="price" column="price" />
+		<result property="num" column="num" />
+		<result property="deliveryTime" column="deliveryTime" />
+		<result property="pack" column="pack" />
+		<result property="deliveryArea" column="deliveryArea" />
+		<result property="requirements" column="requirements" />
+		<result property="wantedTotal" column="wantedTotal" />
+		<result property="picture" column="picture"/>
+		<result property="shipName" column="shipName" />
+		<result property="province" column="province" />
+		<result property="city" column="city" />
+		<result property="area" column="area" />
+		<result property="detail" column="detail" />
+		<result property="phone" column="phone" />
+		<result property="zip" column="zip" />
+		<association property="buyUser" column="buid"
+			select="lxms.dao.UserDao.getById"></association>
+		<association property="sellerUser" column="suid"
+			select="lxms.dao.UserDao.getById"></association>
+		<association property="orderOver" column="orderId"
+			select="lxms.dao.OrderOverDao.getByOrderId"></association>
+		<association property="depositPay" column="orderId"
+			select="lxms.dao.DepositPayDao.getByOrderId"></association>
+
+	</resultMap>
+	
+	<select id="getById" parameterType="Long" resultMap="OrderResult">
+		select *
+		from order_lxms where orderId=#{orderId}
+	</select>
+	<insert id="add" useGeneratedKeys="true" keyProperty="orderId" parameterType="Order">
+		insert into order_lxms
+		values(null,null,#{status},#{wid},#{depositPaystatus},#{otherRequirement},#{sellerUser.uid},#{buyUser.uid},#{total},#{depositPay.depositPayId},#{buyerSee},#{sellerSee}
+		,#{productName},#{price},#{num},#{deliveryTime},#{pack},#{deliveryArea},#{requirements},#{wantedTotal},#{picture}
+		,#{shipName},#{province},#{city},#{area},#{detail},#{phone},#{zip})
+	</insert>
+	<delete id="delete">
+		delete from order_lxms where orderId = #{orderId}
+	</delete>
+	<update id="deleteBySeller">
+		update order_lxms
+		<set>
+			sellerSee = 0
+		</set>
+		where orderId = #{orderId} and suid = #{suid}  and status != 'jyz'
+	</update>
+	<update id="deleteByBuyer">
+		update order_lxms
+		<set>
+			buyerSee = 0
+		</set>
+		where orderId = #{orderId} and buid = #{buid} and status != 'jyz'
+	</update>
+	<update id="update" parameterType="Wanted">
+		update order_lxms
+		<set>
+
+		</set>
+		where orderId=#{orderId}
+	</update>
+	<update id="updateStatus" parameterType="Map">
+		update order_lxms
+		<set>
+			<if test="status!=null">
+				status = #{status},
+			</if>
+			<if test="refundStatus!=null">
+				refundStatus = #{refundStatus},
+			</if>
+			<if test="depositPaystatus!=null">
+				depositPaystatus = #{depositPaystatus}
+			</if>
+		</set>
+		<if test="depositPayId!=null">
+			where depositPayId=#{depositPayId}
+		</if>
+		<if test="orderId!=null">
+			where orderId=#{orderId}
+		</if>
+		
+	</update>
+	
+	<select id="find" parameterType="Map" resultMap="OrderResult">
+		select * from order_lxms
+		<where>
+			<if test="status!=null "></if>
+		</where>
+		order by createDate desc
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+	<select id="findMy" parameterType="Map" resultMap="OrderResult">
+		select * from order_lxms 
+		<where>
+			<if test="uid!=null ">
+				(buyerSee = #{uid} and status!='cj') or (sellerSee = #{uid} and status!='cj')
+			</if>
+		</where>
+		order by createDate desc
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+
+
+	
+
+</mapper> 

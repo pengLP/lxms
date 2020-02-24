@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lxms.dao.PayDao">
+	<resultMap type="Pay" id="PayResult">
+		<id property="payId" column="payId" />
+		<result property="seller_Id" column="seller_Id" />
+		<result property="trade_status" column="trade_status" />
+		<result property="buyer_id" column="buyer_id" />
+		<result property="trade_type" column="trade_type" />
+		<result property="total_fee" column="total_fee" />
+		<result property="trade_no" column="trade_no" />
+		<result property="payTypeId" column="wid" />
+		<result property="payment" column="payment" />
+		<result property="createDate" column="createDate" />
+	</resultMap>
+
+
+	<insert id="add" parameterType="Pay">
+	INSERT into pay VALUES(null,#{seller_Id},#{trade_status},#{buyer_id},#{total_fee},#{trade_type},#{trade_no},#{payTypeId},#{payment},null) ON DUPLICATE KEY UPDATE trade_status = #{trade_status}
+
+	</insert>
+	<select id="getById" parameterType="Long" resultMap="PayResult">
+		select *
+		from pay where payId=#{payId}
+	</select>
+	<select id="getByPayTypeId" resultType="Pay">
+		select * from pay
+		<where>
+			
+			<if test="payTypeId!=null">
+				payTypeId = #{payTypeId}
+			</if>
+		</where>
+	</select>
+	<update id="update" parameterType="Pay">
+		update pay
+		<set>
+			<if test="trade_status!=null and trade_status!=''">
+				trade_status=#{trade_status},
+			</if>
+		</set>
+		where payId=#{payId}
+	</update>
+
+
+
+
+</mapper> 

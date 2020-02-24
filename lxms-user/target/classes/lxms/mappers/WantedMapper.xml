@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lxms.dao.WantedDao">
+	<resultMap type="Wanted" id="WantedResult">
+		<id property="wid" column="wid" />
+		<result property="productName" column="productName" />
+		<result property="price" column="price" />
+		<result property="num" column="num" />
+		<result property="address" column="address" />
+		<result property="deliveryTime" column="deliveryTime" />
+		<result property="pack" column="pack" />
+		<result property="deliveryArea" column="deliveryArea" />
+		<result property="requirements" column="requirements" />
+		<result property="total" column="total" />
+		<result property="status" column="status" />
+		<association property="user" column="uid"
+			select="lxms.dao.UserDao.getById"></association>
+		<association property="userAddress" column="addressId"
+			select="lxms.dao.UserAddressDao.getById"></association>
+	</resultMap>
+	<resultMap type="Wanted" id="WantedResult2">
+		<id property="wid" column="wid" />
+		<result property="productName" column="productName" />
+		<result property="num" column="num" />
+		<result property="total" column="total" />
+		<result property="picture" column="picture" />
+		<result property="deliveryArea" column="deliveryArea" />
+		<result property="deliveryTime" column="deliveryTime" />
+		<result property="status" column="status" />	
+		<association property="user" column="uid"
+			select="lxms.dao.UserDao.getById"></association>
+	</resultMap>
+
+	<select id="getById" parameterType="Long" resultMap="WantedResult">
+		select *
+		from wanted where wid=#{wid}
+	</select>
+	<insert id="add" useGeneratedKeys="true" keyProperty="wid"
+		parameterType="Wanted">
+		insert into wanted
+		values(null,#{user.uid},#{productName},#{price},#{num},#{userAddress.addressId},#{deliveryTime},#{pack},#{deliveryArea},#{requirements},#{total},null,#{picture},#{status},#{createType})
+	</insert>
+	<delete id="delete">
+		delete from wanted where wid = #{wid} and uid =
+		#{uid}
+	</delete>
+	<update id="update" parameterType="Wanted">
+		update Wanted
+		<set>
+
+		</set>
+		where wid=#{wid}
+	</update>
+	<update id="updateStatus">
+		update Wanted
+		<set>
+			<if test="status">
+				status = #{status}
+			</if>
+		</set>
+		where wid=#{wid}
+	</update>
+	<select id="find" parameterType="Map" resultMap="WantedResult2">
+		select wid,productName,total,num,pack,uid,picture,status,deliveryArea,deliveryTime from wanted
+		<where>
+			createType = 0 and
+			<if test="status!=null ">
+				status=#{status}
+			</if>
+		</where>
+		<if test="orderDesc==null and orderAsc==null">
+			order by createDate desc
+		</if>
+		<if test="orderDesc!=null">
+			order by ${orderDesc} desc
+		</if>
+		<if test="orderAsc!=null">
+			order by ${orderAsc} asc
+		</if>
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+
+
+
+	<select id="findDetail" parameterType="Map" resultType="Wanted">
+		select * from wanted
+		<where>
+			<if test="status!=null">
+				status!=#{status}
+			</if>
+			<if test="uid!=null">
+				and uid = #{uid}
+			</if>
+		</where>
+		order by createDate asc
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+
+
+</mapper> 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lxms.dao.WantedPayDao">
+	<resultMap type="WantedPay" id="WantedPayResult">
+
+	</resultMap>
+	<select id="getByWanteId"   parameterType="Long" resultType="WantedPay">
+		select *
+		from wanted_pay where wid=#{wid}
+	
+	</select>
+	<select id="getById" parameterType="Long" resultType="WantedPay">
+		select *
+		from wanted_pay where wantedPayId=#{wantedPayId}
+	</select>
+	<insert id="add" parameterType="WantedPay">
+		insert into wanted_pay
+		values(null,#{wanted.wid},#{paystatus},#{payamount},now(),#{payMethod}
+		)
+	</insert>
+	<delete id="delete">
+		delete from wanted_Pay where wantedPayId =
+		#{wantedPayId}
+	</delete>
+	<update id="update" parameterType="WantedPay">
+		update wanted_pay 
+		<set>
+			paystatus = #{paystatus}
+		</set>
+		
+		where wid = #{wid}
+	</update>
+
+</mapper> 

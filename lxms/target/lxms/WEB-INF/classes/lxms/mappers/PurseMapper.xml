@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lxms.dao.PurseDao">
+	<resultMap type="Purse" id="PurseResult">
+		<id property="purseId" column="purseId" />
+		<result property="password" column="password" />
+		<result property="balance" column="balance" />
+		<result property="bindingAlipay" column="bindingAlipay" />
+		<result property="isHavePassword" column="isHavePassword" />
+	</resultMap>
+
+	<select id="getById" parameterType="Long" resultMap="PurseResult">
+		select *
+		from purse where purseId=#{purseId}
+	</select>
+	<insert id="add" useGeneratedKeys="true" keyProperty="purseId"
+		parameterType="Purse">
+		insert into purse
+		values(null,#{user.uid},null,#{balance},null,#{isHavePassword},#{isHaveAli})
+	</insert>
+	<select id="getByUid" parameterType="Long" resultType="Purse">
+		select *
+		from purse where uid=#{uid}
+	</select>
+	<update id="update" parameterType="Map">
+		update purse
+		<set>
+			<if test="blance!=null">
+				balance = #{balance},
+			</if>
+			<if test="password!=null">
+				password = #{password},
+			</if>
+			<if test="bindingAlipay!=null">
+				bindingAlipay = #{bindingAlipay},
+			</if>
+			<if test="isHavaPassword!=null">
+				isHavePassword = #{isHavePassword},
+			</if>
+			<if test="isHaveAli!=null">
+				isHaveAli = #{isHaveAli},
+			</if>
+		</set>
+		where uid=#{uid}
+	</update>
+	<update id="updateMap" parameterType="Purse">
+		update purse
+		<set>
+			<if test="blance!=null">
+				balance = #{balance}
+			</if>
+			<if test="password!=null">
+				password = #{password},
+			</if>
+			<if test="bindingAlipay!=null">
+				bindingAlipay = #{bindingAlipay},
+			</if>
+			<if test="isHavaPassword!=null">
+				isHavePassword = #{isHavePassword},
+			</if>
+			<if test="isHaveAli!=null">
+				isHaveAli = #{isHaveAli},
+			</if>
+		</set>
+		where purseId=#{purseId}
+	</update>
+	
+	<update id="addMoney">
+		update purse set balance = balance + #{sum} where purseId = #{purseId}
+	</update>
+	<update id="subtractMoney">
+		update purse set balance = balance - #{sum} where purseId = #{purseId}
+	</update>
+	
+
+
+</mapper> 

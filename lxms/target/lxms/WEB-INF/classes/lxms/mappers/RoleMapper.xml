@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hlju.enews.dao.RoleDao">
+	<resultMap type="Role" id="RoleResult">
+		<id property="rid" column="rid"/>
+		<result property="rName" column="rName"/>
+	</resultMap>
+
+	<insert id="add" parameterType="Role">
+		insert into role values(null,#{rName})
+	</insert>
+	
+	<delete id="delete" parameterType="Long">
+		delete from role where rid=#{rid}
+	</delete>
+	
+	<update id="update" parameterType="Role">
+		update role
+		<set>
+			<if test="rName!=null">
+				rName=#{rName},
+			</if>
+		</set>
+		where rid=#{rid}
+	</update>
+	
+	<select id="getById" parameterType="Long" resultType="Role">
+		select * from role where rid=#{rid}
+	</select>
+	
+	<select id="find" parameterType="Map" resultMap="RoleResult">
+		select * from role
+		<where>
+			<if test="start!=null and size!=null">
+				limit #{start},#{size}
+			</if>
+		</where>
+	</select>
+	
+		
+	
+	
+	
+</mapper> 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lxms.dao.UserDao">
+	<resultMap type="User" id="UserResult">
+		<id property="uid" column="uid"/>
+		<result property="tel" column="tel"/>
+		<result property="password" column="password"/>
+		<result property="name" column="name"/>
+		<result property="createDate" column="createDate"/>	
+		<result property="isReal" column="isReal"/>	
+	</resultMap>
+	
+	<select id="login" parameterType="User" resultType="User">
+		select uid,name,tel,isReal,head,password from user_info where tel=#{tel} and password = #{password}
+	</select>
+	<insert id="add" parameterType="User" useGeneratedKeys="true" keyProperty="uid">
+		insert into user_info values(null,#{tel},#{name},#{password},null,0,null)
+	</insert>
+	<select id="getById" parameterType="Long" resultType="User">
+		select uid,name,head,isReal from user_info where uid=#{uid}
+	</select>
+	
+	<select id="getByTel" parameterType="String" resultType="User">
+		select uid,name,tel,head,isReal from user_info where tel=#{tel}
+	</select>
+	
+	<update id="update" parameterType="Map">
+		update user_info   
+		<set>
+			<if test="name!=null">
+				name=#{name},
+			</if>
+			<if test="head!=null">
+				head=#{head},
+			</if>
+			<if test="password!=null">
+				password=#{password}
+			</if>
+			
+		</set>
+		where uid=#{uid}
+	</update>
+	
+	
+	
+	
+</mapper> 

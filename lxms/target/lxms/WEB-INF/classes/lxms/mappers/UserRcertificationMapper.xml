@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lxms.dao.UserRcertificationDao">
+	<resultMap type="UserRcertification" id="UserRcertificationResult">
+		<id property="userRcertificationId" column="userRcertificationId" />
+		<result property="productName" column="productName" />
+		<result property="realName" column="realName" />
+		<result property="carded" column="carded" />
+		<result property="cardedPicture" column="cardedPicture" />
+		<result property="passportPicture" column="passportPicture" />
+		<result property="status" column="status" />
+		<result property="throughAudit" column="throughAudit" />
+	</resultMap>
+
+	<update id="updateStatus" parameterType="UserRcertification">
+		update user_Rcertification
+		<set>
+			<if test="status!=null">
+				status = #{status},
+			</if>
+			<if test="throughAudit!=null">
+				throughAudit = #{throughAudit}
+			</if>
+		</set>
+		where userRcertificationId=#{userRcertificationId}
+	</update>
+	<select id="find" parameterType="Map" resultMap="UserRcertificationResult">
+		select * from user_Rcertification
+		<where>
+			<if test="status!=null ">
+				status = #{status}  and 
+			</if>
+			<if test="throughAudit!=null">
+				throughAudit = #{throughAudit}
+			</if>
+		</where>
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+
+	<select id="getById" parameterType="Long" resultMap="UserRcertificationResult">
+		select * from user_Rcertification where userRcertificationId = #{userRcertificationId}
+	</select>
+	<select id="getByUid" parameterType="Long" resultMap="UserRcertificationResult">
+		select * from user_Rcertification where uid = #{uid}
+	</select>
+
+</mapper> 

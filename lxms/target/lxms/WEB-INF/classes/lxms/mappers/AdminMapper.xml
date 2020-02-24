@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lxms.dao.AdminDao">
+	<resultMap type="Admin" id="AdminResult">
+		<id property="uid" column="uid"/>
+		<result property="uesername" column="username"/>
+		<result property="password" column="password"/>
+		<result property="name" column="name"/>
+		<result property="createTime" column="createTime"/>
+		<association property="role" column="rid" select="lxms.RoleDao.getById"></association>
+		
+	</resultMap>
+	
+	<select id="login" parameterType="User" resultType="Admin">
+		select * from admin where username=#{username} and password = #{password}
+	</select>
+	<insert id="add" parameterType="User">
+		insert into admin values(null,#{uesername},#{name},#{password},null,#{role.rid})
+	</insert>
+	<select id="getById" parameterType="Long" resultType="Admin">
+		select * from admin where uid=#{uid}
+	</select>
+	
+	<select id="getByUsername" parameterType="String" resultType="Admin">
+		select * from admin where username=#{username}
+	</select>
+	<delete id="delete" parameterType="Long">
+		delete from admin where uid=#{uid}
+	</delete>
+	
+	<update id="update" parameterType="Admin">
+		update admin set  
+		<set>
+			<if test="username!=null">
+				username=#{username},
+			</if>
+			<if test="password!=null">
+				password=#{password},
+			</if>
+			<if test="name!=null">
+				name=#{name},
+			</if>
+		</set>
+		where uid=#{uid}
+	</update>
+	
+	
+	<select id="getRolesByUsername" parameterType="String"
+		resultType="String">
+		select r.rName from admin u,role r where u.rid=r.rid
+		and u.username=#{username}
+	</select>
+	
+	
+</mapper> 

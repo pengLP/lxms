@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lxms.dao.RouteDao">
+	<resultMap type="Route" id="RouteResult">
+		<id property="rid" column="rid" />
+		<result property="traveDate" column="traveDate" />
+		<result property="startPlace" column="startPlace" />
+		<result property="travelPlace" column="travelPlace" />
+		<result property="mainCity" column="mainCity" />
+		<result property="returnDate" column="returnDate" />
+		<result property="perference" column="perference" />
+		<result property="createDate" column="createDate" />
+		<result property="instruction" column="instruction" />
+		<association property="user" column="uid"
+			select="lxms.dao.UserDao.getById"></association>
+	</resultMap>
+	<resultMap type="Route" id="RouteResult2">
+		<id property="rid" column="rid" />
+		<result property="traveDate" column="traveDate" />
+		<result property="startPlace" column="startPlace" />
+		<result property="travelPlace" column="travelPlace" />
+		<result property="mainCity" column="mainCity" />
+		<result property="returnDate" column="returnDate" />
+		<result property="createDate" column="createDate" />
+		<association property="user" column="uid"
+			select="lxms.dao.UserDao.getById"></association>
+	</resultMap>
+
+	<insert id="add" parameterType="Route" useGeneratedKeys="true"
+		keyProperty="rid">
+		insert into route
+		values(null,#{user.uid},#{travelDate},#{startPlace},#{travelPlace},#{mainCity},#{returnDate},#{perference},#{instruction},null)
+	</insert>
+	<select id="getById" parameterType="Long" resultMap="RouteResult">
+		select *
+		from route where rid=#{rid}
+	</select>
+
+	<update id="update" parameterType="Route">
+		update route
+		<set>
+			<if test="name!=null">
+				name=#{name},
+			</if>
+		</set>
+		where rid=#{rid}
+	</update>
+
+	<select id="find" parameterType="Map" resultMap="RouteResult2">
+		select rid,travelDate,startPlace,travelPlace,mainCity,returnDate,uid
+		from route
+		<where>
+			returnDate > now()
+			<if test="uid!=null">
+				uid=#{uid}
+			</if>
+		</where>
+		<if test="order==null">
+			order by createDate desc
+		</if>
+		<if test="order!=null">
+			order by #{order} desc
+		</if>
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+
+	</select>
+
+	<select id="findDetail" parameterType="Map" resultType="Route">
+		select * from route
+		<where>
+			
+			<if test="uid!=null">
+				and uid=#{uid}
+			</if>
+		</where>
+		order by createDate desc
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+
+
+</mapper> 
